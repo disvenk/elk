@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Base logback configuration provided for compatibility with Spring Boot 1.1
+-->
+<configuration>
+    <!--使用默认配置，默认文件提供了大量丰富的配置-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <!--使用默认的控制台输出格式-->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <!-- ConsoleAppender 控制台输出日志 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 对日志进行格式化 -->
+        <encoder>
+            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger -%msg%n</pattern>-->
+            <pattern>%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%thread]){faint} %clr(%-40.40logger{39}){cyan} %L %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+            <!--<pattern>${FILE_LOG_PATTERN}</pattern>-->
+        </encoder>
+    </appender>
+
+    <appender name="LOGSTASH"
+              class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>47.104.19.44:4560</destination>
+        <!-- encoder必须配置,有多种可选 -->
+        <encoder charset="UTF-8"
+                 class="net.logstash.logback.encoder.LogstashEncoder" >
+            <!-- "appname":"elk_test" 的作用是指定创建索引的名字时用，并且在生成的文档中会多了这个字段  -->
+            <!--<customFields>{"appname":"elktest"}</customFields>-->
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH" />
+    </root>
+</configuration>
+
